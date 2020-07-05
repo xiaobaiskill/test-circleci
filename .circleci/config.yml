@@ -1,6 +1,6 @@
 version: 2.1 
 
-executor:
+executors:
   machine-executor:
   	machine: true
 
@@ -37,6 +37,7 @@ workflows:
   build:
     jobs:
       - build-with-machine:
+          context: docker-login
           filters:
             branches:
               ignore:
