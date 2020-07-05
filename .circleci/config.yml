@@ -39,16 +39,21 @@ workflows:
   build-run:
     jobs:
       - build-with-machine:
+          context: docker-login
           filters:
             branches:
               ignore:
                 - feature*
-      - docker-run:
-          context: docker-login
+      - docker-run-master:
           requires:
             - build-with-machine
           filters:
             branches:
-              ignore:
-                - feature*
-
+              only: master
+      - docker-run-dev:
+          requires:
+            - build-with-machine
+          filters:
+            branches:
+              only: develop
+          
