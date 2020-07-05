@@ -10,7 +10,7 @@ commands:
       - run:
           name: docker login
           command: |
-          docker login -u $username -p $password
+            docker login -u $username -p $password
 
 jobs:
   build-with-machine:
