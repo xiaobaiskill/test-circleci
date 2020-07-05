@@ -1,8 +1,8 @@
 version: 2.1 
 
 executors:
-    machine-executor:
-      machine: true
+  machine-executor:
+    machine: true
 
 commands:
   docker-login:
@@ -20,7 +20,7 @@ jobs:
       - docker-login
       - run: make docker-push
 
-  run:
+  docker-run:
     executor: machine-executor
     steps:
       - checkout
@@ -41,11 +41,11 @@ workflows:
             branches:
               ignore:
                 - feature*
-      - run:
-        require:
-          - build-with-machine
-        filters:
-          branches:
-            ignore:
-              - feature*
+      - docker-run:
+          require:
+            - build-with-machine
+          filters:
+            branches:
+              ignore:
+                - feature*
 
