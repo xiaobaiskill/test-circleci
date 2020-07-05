@@ -44,16 +44,10 @@ workflows:
             branches:
               ignore:
                 - feature*
-      - docker-run-master:
+      - docker-run:
           requires:
             - build-with-machine
           filters:
             branches:
               only: master
-      - docker-run-dev:
-          requires:
-            - build-with-machine
-          filters:
-            branches:
-              only: develop
           
