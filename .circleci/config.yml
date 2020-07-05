@@ -3,6 +3,9 @@ version: 2.1
 executors:
   machine-executor:
     machine: true
+  docker-executor:
+    docker:
+      - image: ankrnetwork/alpine:v1.0.0
 
 commands:
   docker-login:
@@ -36,7 +39,6 @@ workflows:
   build-run:
     jobs:
       - build-with-machine:
-          context: docker-login
           filters:
             branches:
               ignore:
