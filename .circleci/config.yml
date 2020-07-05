@@ -1,8 +1,8 @@
 version: 2.1 
 
 executors:
-  machine-executor:
-  	machine: true
+    machine-executor:
+    machine: true
 
 commands:
   docker-login:
@@ -21,13 +21,12 @@ jobs:
       - run: make docker-push
 
   run:
-    executor:
-      executor: machine-executor
-      steps:
-        - checkout
-        - run:
-            name: docker pull and run
-            command: |
+    executor: machine-executor
+    steps:
+      - checkout
+      - run:
+          name: docker pull and run
+          command: |
             BRANCH_NAME=$(git rev-parse --short HEAD)
             docker pull jinmz/hello-circile:${BRANCH_NAME}
             docker run jinmz/hello-circile:${BRANCH_NAME}
