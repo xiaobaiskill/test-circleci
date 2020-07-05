@@ -38,7 +38,7 @@ workflows:
       - docker-run:
           context: docker-login
           requires:
-            - build-with-machine:
+            - build-with-machine
           filters:
             branches:
               ignore:
