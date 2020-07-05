@@ -2,7 +2,7 @@ version: 2.1
 
 executors:
     machine-executor:
-    machine: true
+      machine: true
 
 commands:
   docker-login:
