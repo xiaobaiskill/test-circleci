@@ -27,7 +27,7 @@ jobs:
       - run:
           name: docker pull and run
           command: |
-            BRANCH_NAME=$(git rev-parse --short HEAD)
+            BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
             docker pull jinmz/hello-circile:${BRANCH_NAME}
             docker run jinmz/hello-circile:${BRANCH_NAME}
 
