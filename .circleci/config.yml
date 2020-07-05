@@ -35,6 +35,12 @@ workflows:
   version: 2
   build-run:
     jobs:
+      - build-with-machine:
+          context: docker-login
+          filters:
+            branches:
+              ignore:
+                - feature*
       - docker-run:
           context: docker-login
           requires:
