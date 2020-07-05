@@ -42,8 +42,6 @@ workflows:
               ignore:
                 - feature*
       - docker-run:
-          require:
-            - build-with-machine
           filters:
             branches:
               ignore:
