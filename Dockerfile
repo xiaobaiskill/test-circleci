@@ -8,6 +8,4 @@ WORKDIR src
 
 ADD . .
 
-RUN export git-branch = $(git rev-parse --short HEAD) 
-
-CMD echo $git-branch
+CMD echo "$(git rev-parse --abbrev-ref HEAD)"

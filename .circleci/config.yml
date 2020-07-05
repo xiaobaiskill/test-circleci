@@ -1,0 +1,51 @@
+version: 2.1 
+
+exector:
+  machine-executor:
+  	machine: true
+
+commands:
+  docker-login:
+    steps:
+      - run:
+          name: docker login
+          command: |
+          docker login -u $username -p $password
+
+jobs:
+  build-with-machine:
+    executor: machine-executor
+    steps:
+      - checkout
+      - docker-login
+      - run: make docker-push
+
+  run:
+    executor:
+      executor: machine-executor
+      steps:
+        - checkout
+        - run:
+            name: docker pull and run
+            command: |
+            BRANCH_NAME=$(git rev-parse --short HEAD)
+            docker pull jinmz/hello-circile:${BRANCH_NAME}
+            docker run jinmz/hello-circile:${BRANCH_NAME}
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build-with-machine:
+          filters:
+            branches:
+              ignore:
+                - feature*
+      - run:
+        require:
+          - build-with-machine
+        filters:
+          branches:
+            ignore:
+              - feature*
+
