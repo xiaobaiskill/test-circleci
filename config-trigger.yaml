@@ -1,0 +1,44 @@
+version: 2.1
+
+parameters:
+  run_test:
+    type: boolean
+    default: true
+
+executors:
+  machine-executor:
+    machine: true
+
+jobs:
+  test-run:
+    executor: machine-executor
+    steps:
+      - run:
+          name: "test run"
+          command: |
+            echo $username;
+
+  docker-run:
+    executor: machine-executor
+    steps:
+      - run:
+          name: "test taigger && parameters"
+          command: |
+            curl -X POST -u ${CIRCLECI_TOKEN}: --header "Content-Type: application/json" -d "{\"branch\":\"${CIRCLE_BRANCH}\", \"parameters\": {\"run_test\": false}}"  https://circleci.com/api/v2/project/github/${CIRCLE_USERNAME}/${CIRCLE_PROJECT_REPONAME}/pipeline
+
+
+workflows:
+  version: 2
+  integration_tests:
+    when:
+      not: << pipeline.parameters.run_test >>
+    jobs:
+      - test-run:
+          context: docker-login
+
+  build-run:
+    when: << pipeline.parameters.run_test >>
+    jobs:
+      - docker-run:
+          context: docker-login
+
