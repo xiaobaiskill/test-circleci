@@ -8,17 +8,6 @@ parameters:
 executors:
   machine-executor:
     machine: true
-  docker-executor:
-    docker:
-      - image: ankrnetwork/alpine:v1.0.0
-
-commands:
-  docker-login:
-    steps:
-      - run:
-          name: docker login
-          command: |
-            docker login -u $username -p $passwd
 
 jobs:
   test-run:
@@ -29,30 +18,13 @@ jobs:
           command: |
             echo $username;
 
-  build-with-machine:
-    executor: machine-executor
-    steps:
-      - checkout
-#      - docker-login
-#      - run: make docker-push
-      - run:
-          echo $username
-
   docker-run:
     executor: machine-executor
     steps:
-      - checkout
       - run:
           name: "test taigger && parameters"
           command: |
-            curl -X POST -u ${CIRCLECI_TOKEN}: --header "Content-Type: application/json" -d '{"branch":"master","paramters": {"run_test": true}}'  https://circleci.com/api/v2/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pipeline
-
-#      - run:
-#          name: docker pull and run
-#          command: |
-#            BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
-#            docker pull jinmz/hello-circile:${BRANCH_NAME}
-#            docker run jinmz/hello-circile:${BRANCH_NAME}
+            curl -X POST -u ${CIRCLECI_TOKEN}: --header "Content-Type: application/json" -d '{"branch":"master", "paramters": {"run_test": true}}'  https://circleci.com/api/v2/project/github/xiaobaiskill/test-circleci/pipeline
 
 
 workflows:
@@ -65,16 +37,6 @@ workflows:
 
   build-run:
     jobs:
-      - build-with-machine:
-          context: docker-login
-          filters:
-            branches:
-              ignore:
-                - feature*
       - docker-run:
-          requires:
-            - build-with-machine
-          filters:
-            branches:
-              only: master
+          context: docker-login
           

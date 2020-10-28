@@ -1,0 +1,50 @@
+version: 2.1
+
+executors:
+  machine-executor:
+    machine: true
+  docker-executor:
+    docker:
+      - image: ankrnetwork/alpine:v1.0.0
+
+commands:
+  docker-login:
+    steps:
+      - run:
+          name: docker login
+          command: |
+            docker login -u $username -p $passwd
+jobs:
+  build-with-machine:
+    executor: machine-executor
+    steps:
+      - checkout
+      - docker-login
+      - run: make docker-push
+
+  docker-run:
+    executor: machine-executor
+    steps:
+      - checkout
+      - run:
+          name: docker pull and run
+          command: |
+            BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+            docker pull jinmz/hello-circile:${BRANCH_NAME}
+            docker run jinmz/hello-circile:${BRANCH_NAME}
+workflows:
+  version: 2
+  build-run:
+    jobs:
+      - build-with-machine:
+          context: docker-login
+          filters:
+            branches:
+              ignore:
+                - feature*
+      - docker-run:
+          requires:
+            - build-with-machine
+          filters:
+            branches:
+              only: master
