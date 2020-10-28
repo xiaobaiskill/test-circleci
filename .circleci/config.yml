@@ -33,8 +33,10 @@ jobs:
     executor: machine-executor
     steps:
       - checkout
-      - docker-login
-      - run: make docker-push
+#      - docker-login
+#      - run: make docker-push
+      - run:
+          echo $username
 
   docker-run:
     executor: machine-executor
@@ -43,7 +45,8 @@ jobs:
       - run:
           name: "test taigger && parameters"
           command: |
-            curl -u ${CIRCLE_API_USER_TOKEN}: -X POST --header "Content-Type: application/json" -d '{"parameters": {"run_test": true}}' https://circleci.com/api/v1.1/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/tree/$CIRCLE_BRANCH
+            curl -u ${CIRCLECI_TOKEN}: -X POST --header "Content-Type: application/json" -d '{"parameters": {"run_test": true}}' https://circleci.com/api/v2/project/github/xiaobaiksill/test-circleci/pipeline
+
 #      - run:
 #          name: docker pull and run
 #          command: |
