@@ -59,13 +59,11 @@ jobs:
 workflows:
   version: 2
   integration_tests:
-    when:
-     not: << pipeline.parameters.run_test >>
+    when: << pipeline.parameters.run_test >>
     jobs:
       - test-run:
           context: docker-login
   build-run:
-    when: << pipeline.parameters.run_test >>
     jobs:
       - build-with-machine:
           context: docker-login
