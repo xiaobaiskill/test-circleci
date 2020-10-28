@@ -13,9 +13,6 @@ executors:
       - image: ankrnetwork/alpine:v1.0.0
 
 commands:
-  greeting:
-    parameters: run_test
-
   docker-login:
     steps:
       - run:
@@ -25,6 +22,7 @@ commands:
 
 jobs:
   test-run:
+    executor: machine-executor
     steps:
       - run:
           name: "test run"
