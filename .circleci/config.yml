@@ -24,7 +24,7 @@ jobs:
       - run:
           name: "test taigger && parameters"
           command: |
-            curl -X POST -u ${CIRCLECI_TOKEN}: --header "Content-Type: application/json" -d '{"branch":"$CIRCLE_BRANCH", "parameters": {"run_test": false}}'  https://circleci.com/api/v2/project/github/${CIRCLE_USERNAME}/${CIRCLE_PROJECT_REPONAME}/pipeline
+            curl -X POST -u ${CIRCLECI_TOKEN}: --header "Content-Type: application/json" -d "{\"branch\":\"${CIRCLE_BRANCH}\", \"parameters\": {\"run_test\": false}}"  https://circleci.com/api/v2/project/github/${CIRCLE_USERNAME}/${CIRCLE_PROJECT_REPONAME}/pipeline
 
 
 workflows:
