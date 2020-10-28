@@ -1,4 +1,4 @@
-version: 2.1
+version: 2
 
 parameters:
   run_test:
@@ -45,12 +45,7 @@ jobs:
       - run:
           name: "test taigger && parameters"
           command: |
-            echo ${CIRCLECI_TOKEN}
-            echo ${CIRCLE_API_USER_TOKEN}
-            echo ${CIRCLE_PROJECT_USERNAME}
-            echo ${CIRCLE_PROJECT_REPONAME}
-            echo ${CIRCLE_BRANCH}
-            curl -u ${CIRCLECI_TOKEN} -X POST --header "Content-Type: application/json" -d '{"branch":"${CIRCLE_BRANCH}", "parameters": {"run_test": true}}' https://circleci.com/api/v2/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pipeline
+            curl -X POST -u ${CIRCLECI_TOKEN} --header "Content-Type: application/json" -d '{"branch":"master","paramters": {"run_test": true}}'  https://circleci.com/api/v2/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pipeline
 
 #            curl -u ${CIRCLE_API_USER_TOKEN}: -X POST --header "Content-Type: application/json" -d '{"parameters": {"run_test": true}}' https://circleci.com/api/v1.1/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/tree/$CIRCLE_BRANCH
 #      - run:
@@ -64,11 +59,13 @@ jobs:
 workflows:
   version: 2
   integration_tests:
-    when: << pipeline.parameters.run_test >>
+    when:
+     not: << pipeline.parameters.run_test >>
     jobs:
       - test-run:
           context: docker-login
   build-run:
+    when: << pipeline.parameters.run_test >>
     jobs:
       - build-with-machine:
           context: docker-login
