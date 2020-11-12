@@ -1,44 +1,52 @@
 version: 2.1
 
-parameters:
-  run_test:
-    type: boolean
-    default: true
-
 executors:
   machine-executor:
     machine: true
+  docker-executor:
+    docker:
+      - image: ankrnetwork/alpine:v1.0.0
 
-jobs:
-  test-run:
-    executor: machine-executor
+commands:
+  docker-login:
     steps:
       - run:
-          name: "test run"
+          name: docker login
           command: |
-            echo $username;
+            docker login -u $username -p $passwd
+jobs:
+  build-with-machine:
+    executor: machine-executor
+    steps:
+      - checkout
+      - docker-login
+      - run: |
+          echo "1111";
+          exit 1;
+      - run: |
+          echo "222";
 
   docker-run:
     executor: machine-executor
     steps:
+      - checkout
       - run:
-          name: "test taigger && parameters"
+          name: docker pull and run
           command: |
-            curl -X POST -u ${CIRCLECI_TOKEN}: --header "Content-Type: application/json" -d "{\"branch\":\"${CIRCLE_BRANCH}\", \"parameters\": {\"run_test\": false}}"  https://circleci.com/api/v2/project/github/${CIRCLE_USERNAME}/${CIRCLE_PROJECT_REPONAME}/pipeline
-
-
+            BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
 workflows:
   version: 2
-  integration_tests:
-    when:
-      not: << pipeline.parameters.run_test >>
-    jobs:
-      - test-run:
-          context: docker-login
-
   build-run:
-    when: << pipeline.parameters.run_test >>
     jobs:
-      - docker-run:
+      - build-with-machine:
           context: docker-login
-          
+          filters:
+            branches:
+              ignore:
+                - feature*
+      - docker-run:
+          requires:
+            - build-with-machine
+          filters:
+            branches:
+              only: master
